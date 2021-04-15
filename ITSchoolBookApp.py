@@ -4,11 +4,11 @@ def add_book():
     #  importing CSV library
     import csv
     with open('booksDB.csv', 'w') as file:
-        writer = csv.DictWriter(file, fieldnames=[
-            "BookName", "AuthorName", "SharedWith", "IsRead"
-        ])
+        fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
         writer.writerow({"BookName": book_name,
-                         "AuthorName": author_name})
+                        "AuthorName": author_name})
     print("Book has been added successfully")
 def list_books():
     print("List the existing books option selected")
