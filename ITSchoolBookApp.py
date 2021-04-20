@@ -3,13 +3,15 @@ def add_book():
     author_name = input("Insert the author name -> ")
     #  importing CSV library
     import csv
-    with open('booksDB.csv', 'w') as file:
+    with open('booksDB.csv', mode='w') as file:
         fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({"BookName": book_name,
                         "AuthorName": author_name})
     print("Book has been added successfully")
+
+
 def list_books():
     print("List the existing books option selected")
 def edit_book():
