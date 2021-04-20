@@ -8,16 +8,32 @@ def add_book():
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerow({"BookName": book_name,
-                        "AuthorName": author_name})
+                        "AuthorName": author_name,
+                        "SharedWith": 'None',
+                        "IsRead": False})
     print("Book has been added successfully")
 
 
 def list_books():
-    print("List the existing books option selected")
+    import csv
+    with open('booksDB.csv', mode='r') as file:
+        #  1: gather the data from the DB
+        rows = csv.DictReader(file)
+        #  2: read the file row by row
+        for row in rows:
+            # fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
+            # print(fieldnames)
+            print(f"""Book name: {row['BookName']}, author: {row['AuthorName']}, shared with: {row['SharedWith']}, the book is read: {row['IsRead']}""")
+        #  make it look like a table
+
+
 def edit_book():
     print("Edit a book option selected")
+
+
 def share_book():
     print("Share a book option selected")
+
 
 # Main menu for user
 print("""Hello! Main menu:
