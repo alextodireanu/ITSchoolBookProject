@@ -1,30 +1,33 @@
 def add_book():
     book_name = input("Insert the book title -> ")
     author_name = input("Insert the author name -> ")
-    #  importing CSV library
-    import csv
-    with open('booksDB.csv', mode='w') as file:
+    # importing os.path to check if the file already exists and avoid creating the headers with each entry in our CSV
+    import csv, os.path
+    file_exists = os.path.isfile('booksDB.csv')
+    # mode = a, appends a new line with each entry at the end of the CSV file
+    with open('booksDB.csv', mode='a', newline='') as file:
         fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"BookName": book_name,
-                        "AuthorName": author_name,
-                        "SharedWith": 'None',
-                        "IsRead": False})
+        #  not writing the headers if the file already exists
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow({fieldnames[0]: book_name,
+                        fieldnames[1]: author_name,
+                        fieldnames[2]: 'None',
+                        fieldnames[3]: False})
     print("Book has been added successfully")
 
 
 def list_books():
     import csv
-    with open('booksDB.csv', mode='r') as file:
+    with open('booksDB.csv', mode='r', newline='') as file:
         #  1: gather the data from the DB
-        rows = csv.DictReader(file)
-        #  2: read the file row by row
+        rows = csv.DictReader(file, delimiter=',')
+        #  2: reading the file row by row and printing it like a table
+        fieldnames = "BookName, AuthorName, SharedWith, IsRead"
+        print(fieldnames)
         for row in rows:
-            # fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
-            # print(fieldnames)
-            print(f"""Book name: {row['BookName']}, author: {row['AuthorName']}, shared with: {row['SharedWith']}, the book is read: {row['IsRead']}""")
-        #  make it look like a table
+            print(f"{row['BookName']}, {row['AuthorName']}, {row['SharedWith']}, {row['IsRead']}")
 
 
 def edit_book():
@@ -36,11 +39,12 @@ def share_book():
 
 
 # Main menu for user
-print("""Hello! Main menu:
-1. Add a book
-2. List the existing books
-3. Edit a book
-4. Share a book""")
+options = ["Add a book", "List the existing books", "Edit a book", "Share a book"]
+index = 1
+print("Hello! Main menu:")
+for option in options:
+    print(f"{index}.{option}")
+    index += 1
 option = int(input("Please select an option -> "))
 
 if option == 1:
