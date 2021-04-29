@@ -33,7 +33,7 @@ def list_books():
 def update_book():
     book_name = input("Enter book name: ")
     book_read = input("Is the book read?(Y/N)?")
-    if book_read == 'Y':
+    if book_read.lower() == 'y':
         book_read = True
     else:
         book_read = False
