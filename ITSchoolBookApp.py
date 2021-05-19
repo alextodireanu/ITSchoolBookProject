@@ -6,6 +6,7 @@ from datetime import date
 # defining the fieldnames for our CSV file
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
+
 # created function to gather the user's input and validate the start and end dates
 def correct_date():
     correct_start_date = False
@@ -125,24 +126,116 @@ def correct_date():
                 break
     return start_date, end_date
 
+
+# add book - reader & writer
+def add_book_reader_writer():
+    book_name = input("Please enter the book's name -> ")
+    if len(book_name) < 3:
+        print("Book name needs to have at least 3 characters. Returning to main menu...")
+        return
+    book_author = input("Please enter the book's author -> ")
+    if len(book_author) < 3:
+        print("Book author needs to have at least 3 characters. Returning to main menu...")
+        return
+    try:
+        with open('booksDB.csv', mode='r', newline='') as readFile:
+            reader = csv.DictReader(readFile, fieldnames=fieldnames, delimiter=',')
+            # code to take a snippet from our CSV file and check if the header exists
+            try:
+                test_bytes = readFile.read(1024)
+                readFile.seek(0)
+                has_header = csv.Sniffer().has_header(test_bytes)
+            # treating the exception where the headers don't exist
+            except _csv.Error:
+                with open('booksDB.csv', mode='w') as writeFile:
+                    writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
+                    writer.writeheader()
+                writeFile.close()
+            else:
+                print()
+            for row in reader:
+                # checking if the book already exists in our DB
+                if row.get(fieldnames[0]) == book_name.title():
+                    book_edit = input("Book already exists. Do you want to return to the main menu and edit it? Reply with Y/N -> ")
+                    if book_edit.upper() == "Y":
+                        print()
+                        readFile.close()
+                        return
+                    elif book_edit.upper() == "N":
+                        print("Book will not be updated, returning to main menu...")
+                        print()
+                        readFile.close()
+                        return
+                    else:
+                        raise TypeError("incorrect button pressed")
+    except IOError:
+        print("Error reading file")
+    except TypeError:
+        print("Incorrect button pressed, returning to main menu...")
+    else:
+        print("File read successfully")
+        readFile.close()
+
+    is_read = input("Did you read it? Reply with Y/N -> ")
+    try:
+        if is_read.upper() == "Y":
+            is_read = True
+            start_date, end_date = correct_date()
+            notes = input("Would you like to leave a note? Reply with Y/N -> ")
+            if notes.upper() == "Y":
+                comment = input("Leave a short comment -> ")
+            else:
+                comment = "None"
+            is_shared = input("Do you want to share it with somebody? Reply with Y/N -> ")
+            if is_shared.upper() == "Y":
+                share_with = input("With whom would you like to share it? -> ")
+                print("Book added and shared successfully! Returning to main menu...")
+                print()
+            else:
+                share_with = "None"
+                print("Book added successfully but will not be shared, returning to main menu...")
+                print()
+        elif is_read.upper() == "N":
+            is_read = False
+            start_date = "N/A"
+            end_date = "N/A"
+            comment = "N/A"
+            share_with = "None"
+            print("Book added successfully! Returning to main menu...")
+            print()
+        else:
+            raise TypeError("Incorrect button pressed")
+    # treating the exception where the user doesn't press Y or N
+    except TypeError:
+        if is_read:
+            return
+        print("Incorrect button pressed, returning to main menu...")
+        print()
+        return
+    else:
+        print()
+
+    try:
+        with open('booksDB.csv', mode='a', newline='') as writeFile:
+            writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
+            writer.writerow({fieldnames[0]: book_name.title(),
+                             fieldnames[1]: book_author.title(),
+                             fieldnames[2]: is_read,
+                             fieldnames[3]: start_date,
+                             fieldnames[4]: end_date,
+                             fieldnames[5]: comment,
+                             fieldnames[6]: share_with.title()})
+    except IOError:
+        print("Error writing file")
+    else:
+        print()
+        writeFile.close()
+
+
+# add book feature
 def add_book():
-    book_name = input("Insert the book title -> ")
-    author_name = input("Insert the author name -> ")
-    # importing os.path to check if the file already exists and avoid creating the headers with each entry in our CSV
-    import csv, os.path
-    file_exists = os.path.isfile('booksDB.csv')
-    # mode = a, appends a new line with each entry at the end of the CSV file
-    with open('booksDB.csv', mode='a', newline='') as file:
-        fieldnames = ["BookName", "AuthorName", "SharedWith", "IsRead"]
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        #  not writing the headers if the file already exists
-        if not file_exists:
-            writer.writeheader()
-        writer.writerow({fieldnames[0]: book_name,
-                        fieldnames[1]: author_name,
-                        fieldnames[2]: 'None',
-                        fieldnames[3]: False})
-    print("Book has been added successfully")
+    print()
+    add_book_reader_writer()
 
 
 def list_books():
