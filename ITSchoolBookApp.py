@@ -238,16 +238,23 @@ def add_book():
     add_book_reader_writer()
 
 
+# list books feature
 def list_books():
-    import csv
-    with open('booksDB.csv', mode='r', newline='') as file:
-        #  1: gather the data from the DB
-        rows = csv.DictReader(file, delimiter=',')
-        #  2: reading the file row by row and printing it like a table
-        fieldnames = "BookName, AuthorName, SharedWith, IsRead"
-        print(fieldnames)
-        for row in rows:
-            print(f"{row['BookName']}, {row['AuthorName']}, {row['SharedWith']}, {row['IsRead']}")
+    print()
+    print("Please see below the existing books")
+    try:
+        with open("booksDB.csv", mode='r', newline='') as readFile:
+            reader = csv.DictReader(readFile, delimiter=',')
+            print()
+            print(fieldnames)
+            for row in reader:
+                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['SharedWith']}, {row['StartDate']}, {row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
+        readFile.close()
+        print()
+    except IOError:
+        print("Error reading file")
+    else:
+        print()
 
 
 def update_book():
