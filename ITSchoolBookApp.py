@@ -245,11 +245,14 @@ def list_books():
         with open("booksDB.csv", mode='r', newline='') as readFile:
             reader = csv.DictReader(readFile, fieldnames=fieldnames, delimiter=',')
             try:
+                # reading the 1st row from the CSV file
                 if next(reader) is False:
                     raise StopIteration("1st row doesn't exist")
                 else:
+                    # reading the 2nd row from the CSV file
                     if next(reader) is False:
                         raise StopIteration("2nd row doesn't exist")
+                # returning to the first position
                 readFile.seek(0)
                 # treating exception where the 1st or 2nd row doesn't exist
             except StopIteration:
