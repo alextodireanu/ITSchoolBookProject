@@ -382,6 +382,31 @@ def share_book():
         print(f"Book has been shared with {share_with} successfully")
 
 
+# clear file function
+def clear_file():
+    try:
+        clear_file = input("This will delete all the records. Are you sure? Y/N -> ")
+        if clear_file.upper() == "Y":
+            # deleting the records by truncating the file
+            with open("booksDB.csv", mode='w+') as file:
+                file.close()
+            print("File cleared")
+            print()
+        elif clear_file.upper() == "N":
+            print("No changes made")
+            print()
+        else:
+            raise TypeError("incorrect button pressed")
+    # treating exception where the user presses an incorrect button
+    except TypeError:
+        print("Incorrect button pressed")
+    # treating exception where the file cannot be written
+    except IOError:
+        print("Error clearing file")
+    else:
+        print()
+
+
 # Main Menu function
 def main_menu():
     options = ("Add a book", "List the existing books", "Update a book", "Share a book", "Leave a note", "Clear file", "Delete book", "Quit")
