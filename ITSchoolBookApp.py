@@ -57,25 +57,97 @@ def update_book():
         print("Book was updated successfully")
 
 def share_book():
-    print("Share a book option selected")
+    book_name = input("Type the name of the book you want to share -> ")
+    share_with = input("With whom would you like to share it? -> ")
+    import csv
+    with open('booksDB.csv', mode='r') as file:
+        rows = list(csv.DictReader(file, fieldnames=("BookName", "AuthorName", "SharedWith", "IsRead")))
+        for row in rows:
+            if row["BookName"] == book_name:
+                row["SharedWith"] = share_with
+                break
+            else:
+                print("Book is not in DB")
+        with open('booksDB.csv', mode='w') as file:
+            csv_writer = csv.DictWriter(file, fieldnames=[
+                "BookName", "AuthorName", "SharedWith", "IsRead"
+            ])
+            csv_writer.writerow({"BookName": row.get("BookName"),
+                             "AuthorName": row.get("AuthorName"),
+                             "SharedWith": share_with,
+                             "IsRead": row.get("IsRead")}
+                            )
+        print(f"Book has been shared with {share_with} successfully")
 
 
-# Main menu for user
-options = ["Add a book", "List the existing books", "Update a book", "Share a book"]
-index = 1
-print("Hello! Main menu:")
-for option in options:
-    print(f"{index}.{option}")
-    index += 1
-option = int(input("Please select an option -> "))
+# Main Menu function
+def main_menu():
+    options = ("Add a book", "List the existing books", "Update a book", "Share a book", "Leave a note", "Clear file", "Delete book", "Quit")
+    index = 1
+    print("Hello! Main menu:")
+    print()
+    for option in options:
+        print(f"{index}.{option}")
+        index += 1
+    print()
+    try:
+        option = int(input("Please select an option -> "))
+        if option == 1:
+            add_book()
+        elif option == 2:
+            list_books()
+        elif option == 3:
+            update_book()
+        elif option == 4:
+            share_book()
+        elif option == 5:
+            book_notes()
+        elif option == 6:
+            clearFile()
+        elif option == 7:
+            deleteBook()
+        elif option == 8:
+            print("App closed, goodbye!")
+        else:
+            raise TypeError("incorrect option")
+    except TypeError:
+        print("Incorrect option selected")
+        print()
+    except ValueError:
+        print("Only numbers from 1-8 are accepted")
+        print()
+    else:
+        return option
 
-if option == 1:
-    add_book()
-elif option == 2:
-    list_books()
-elif option == 3:
-    update_book()
-elif option == 4:
-    share_book()
-else:
-    print("Selected option is not available")
+# App start function
+def appStart():
+    max_tries = 3
+    tries = 0
+    start = input("Press * to start the app -> ")
+    if start == "*":
+        is_started = True
+    else:
+        tries += 1
+        is_started = False
+
+    while not is_started and tries < max_tries:
+        if tries == 2:
+            print("Last try, otherwise the app will close")
+            start = input("Press * to start the app -> ")
+            if start == "*":
+                is_started = True
+            else:
+                print("App closed!")
+        elif tries < 2:
+            print(f"Incorrect button pressed, you have {max_tries - tries} tries left")
+            start = input("Press * to start the app -> ")
+            if start == "*":
+                is_started = True
+        tries += 1
+
+    while is_started:
+        option = main_menu()
+        if option == 8:
+            break
+
+appStart()
