@@ -1,1 +1,2 @@
-Clean Code,Robert C. Martin,None,True
+BookName,AuthorName,IsRead,StartDate,EndDate,Notes,SharedWith
+Clean Code,Robert C. Martin,True,2021-01-01,2021-02-02,None,None
