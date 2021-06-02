@@ -241,16 +241,30 @@ def add_book():
 # list books feature
 def list_books():
     print()
-    print("Please see below the existing books")
     try:
         with open("booksDB.csv", mode='r', newline='') as readFile:
-            reader = csv.DictReader(readFile, delimiter=',')
-            print()
-            print(fieldnames)
+            reader = csv.DictReader(readFile, fieldnames=fieldnames, delimiter=',')
+            try:
+                # reading the 1st row from the CSV file
+                if next(reader) is False:
+                    raise StopIteration("1st row doesn't exist")
+                else:
+                    # reading the 2nd row from the CSV file
+                    if next(reader) is False:
+                        raise StopIteration("2nd row doesn't exist")
+                # returning to the first position
+                readFile.seek(0)
+                # treating exception where the 1st or 2nd row doesn't exist
+            except StopIteration:
+                print("Warning! The file is empty, please add books!")
+                print()
+                readFile.close()
+                return False
+            else:
+                print()
             for row in reader:
-                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['SharedWith']}, {row['StartDate']}, {row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
+                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['StartDate']}, {row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
         readFile.close()
-        print()
     except IOError:
         print("Error reading file")
     else:
@@ -354,7 +368,9 @@ def update_book_reader_writer():
 
 # update book feature
 def update_book():
-    list_books()
+    # added condition to return to the main menu if the file is empty
+    if list_books() is False:
+        return
     update_book_reader_writer()
 
 
