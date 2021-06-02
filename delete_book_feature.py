@@ -3,19 +3,20 @@ from list_books_feature import list_books
 
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
+
 # delete book function
 def delete_book():
     if list_books() is False:
         return
-    updated_list =[]
+    updated_list = []
     book_found = []
-    delete_book = input("Which book would you like to delete? -> ")
+    delete_record = input("Which book would you like to delete? -> ")
     try:
         with open("booksDB.csv", mode='r', newline='') as readFile:
             reader = csv.DictReader(readFile, fieldnames=fieldnames, delimiter=',')
             for row in reader:
                 updated_list.append(row)
-                if row[fieldnames[0]] == delete_book.title().strip():
+                if row[fieldnames[0]] == delete_record.title().strip():
                     book_found.append(True)
                     updated_list.remove(row)
                     print("Book deleted")

@@ -5,7 +5,7 @@ import update_book_feature
 import share_book_feature
 from clear_file_feature import clear_file
 from delete_book_feature import delete_book
-
+import book_notes_feature
 
 # Main Menu function
 def main_menu():
@@ -28,7 +28,7 @@ def main_menu():
         elif option == 4:
             share_book_feature.share_book()
         elif option == 5:
-            book_notes()
+            book_notes_feature.book_notes()
         elif option == 6:
             clear_file()
         elif option == 7:

@@ -5,6 +5,7 @@ from list_books_feature import list_books
 
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
+
 # update book - reader & writer
 def update_book_reader_writer():
     # defining start and end date as empty and they will take values from the correct_date function
@@ -99,6 +100,7 @@ def update_book_reader_writer():
         print("Error while writing file")
     else:
         print()
+
 
 # update book feature
 def update_book():

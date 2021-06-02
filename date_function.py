@@ -1,6 +1,7 @@
 import datetime
 from datetime import date
 
+
 # created function to gather the user's input and validate the start and end dates
 def correct_date():
     correct_start_date = False
