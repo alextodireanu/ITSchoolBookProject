@@ -27,7 +27,8 @@ def list_books():
             else:
                 print()
             for row in reader:
-                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['StartDate']}, {row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
+                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['StartDate']}, "
+                      f"{row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
         readFile.close()
     except IOError:
         print("Error reading file")

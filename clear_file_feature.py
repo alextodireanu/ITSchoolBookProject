@@ -1,4 +1,4 @@
-# clear file function
+# clear file feature
 def clear_file():
     try:
         empty_file = input("This will delete all the records. Are you sure? Y/N -> ")

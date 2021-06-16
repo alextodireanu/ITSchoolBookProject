@@ -26,13 +26,14 @@ def delete_book():
 
         if True not in book_found:
             print("Book not found, returning to main menu...")
-            print()
-            return
+            return print()
 
-        with open("booksDB.csv", mode='w', newline='') as writeFile:
-            writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
-            writer.writerows(updated_list)
-        writeFile.close()
+        else:
+            with open("booksDB.csv", mode='w', newline='') as writeFile:
+                writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
+                writer.writerows(updated_list)
+                writeFile.close()
+
     except IOError:
         print("Error updating file")
     else:
