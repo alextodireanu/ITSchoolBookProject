@@ -1,28 +1,34 @@
 import csv
+import tools
 from date_function import correct_date
-import add_book_feature
 from list_books_feature import list_books
 
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
+
 # share book reader & writer
 def share_book_reader_writer():
-    shared_book = input("Which book would you like to share? -> ")
-    shared_with = ""
-    is_read = False
-    updated_shared_list = []
+    book_name = input("Which book would you like to share? -> ")
+    # created method in tools module that will return
+    # empty variables which will take values from the conditional tests; is_read defined as False
+    author_name, start_date, end_date, notes, shared_with, is_read = tools.Utils.variables()
+    # created 2 empty lists, book_found will store either True or False if the book is found in our file
+    # books_list will store the rows from our CSV file
+    books_list = []
     book_found = []
     try:
         with open("booksDB.csv", mode='r', newline='') as readFile:
             reader = csv.DictReader(readFile, fieldnames=fieldnames, delimiter=',')
             for row in reader:
-                updated_shared_list.append(row)
-                if row.get(fieldnames[0]) == shared_book.title().strip():
+                books_list.append(row)
+                if row.get(fieldnames[0]) == book_name.title().strip():
                     book_found.append(True)
-                    updated_shared_list.remove(row)
+                    books_list.remove(row)
+                    author_name = row.get(fieldnames[1])
+                    notes = row.get(fieldnames[5])
                     # using condition to make a book shareable only if it's marked as read
                     if row.get(fieldnames[2]) != "True":
-                        book_not_read = input("The selected book is not yet read. Did you finish it? Reply with Y/N -> ")
+                        book_not_read = input("The selected book is not read. Did you finish it? Reply with Y/N -> ")
                         # providing the option to mark the book as read and linked to correct_date function
                         if book_not_read.upper().strip() == "Y":
                             is_read = True
@@ -33,8 +39,10 @@ def share_book_reader_writer():
                             readFile.close()
                             return
                         if row.get(fieldnames[6]) == "None":
-                            shared_with = input("With whom would you like to share the book? Type here -> ")
-                            print(f"Book successfully shared with {shared_with.title().strip()}")
+                            shared_with = input("With whom would you like to share the book? "
+                                                "Type here -> ").title().strip()
+                            # shared_with.title().strip()
+                            print(f"Book successfully shared with {shared_with}")
                         else:
                             raise TypeError("incorrect button pressed")
                     else:
@@ -44,10 +52,11 @@ def share_book_reader_writer():
                         if row.get(fieldnames[6]) != "None":
                             print(f"Book is already shared with {row['SharedWith']}")
                             # provided the option to insert additional people to share the book with
-                            additional_share = input("Would you like to share it with somebody else? Reply with Y/N -> ")
+                            additional_share = input("Would you like to share it with someone else? Reply with Y/N -> ")
                             if additional_share.upper().strip() == "Y":
-                                additional_share = input("Type the name(s) here. If multiple, please use ',' to separate them -> ")
-                                shared_with = additional_share.title().strip() + ',' + row.get(fieldnames[6])
+                                additional_share = input("Type the name(s) here. "
+                                                         "If multiple, use ',' to separate them -> ")
+                                shared_with = [additional_share.title().strip() + ', ' + row.get(fieldnames[6])]
                                 print(f"Book successfully shared with {shared_with}")
                             elif additional_share.upper().strip() == "N":
                                 print("Book will not be shared with anyone else! Returning to main menu...")
@@ -63,43 +72,32 @@ def share_book_reader_writer():
                     book_found.append(False)
     except TypeError:
         print("Incorrect button pressed, returning to main menu...")
-        print()
-        return
+        readFile.close()
+        return print()
     else:
+        readFile.close()
         print()
 
-    try:
-        # providing the option to add the book if it was not found in our list, linked with add book feature
-        if True not in book_found:
-            book_not_found = input("The book was not found. Would you like to add it? Reply with Y/N -> ")
-            if book_not_found.upper().strip() == "Y":
-                add_book_feature.add_book()
-                return
-            elif book_not_found.upper().strip() == "N":
-                print("Book will not be added, returning to main menu...")
-                print()
-                return
-            else:
-                raise TypeError("incorrect button pressed")
-    except TypeError:
-        print("Incorrect button pressed, returning to main menu...")
-        print()
+    # used the imported method from Utils class to search in our list
+    if True not in book_found:
+        tools.Utils.find_book()
         return
-    else:
-        print()
 
     try:
         with open("booksDB.csv", mode='w', newline='') as writeFile:
             writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
-            writer.writerow(updated_shared_list[0])
-            writer.writerow({fieldnames[0]: row.get(fieldnames[0]),
-                             fieldnames[1]: row.get(fieldnames[1]),
+            # rewriting the rows in the CSV file, the headers are the first row
+            writer.writerow(books_list[0])
+            # the updated book details are the 2nd row
+            writer.writerow({fieldnames[0]: book_name.title(),
+                             fieldnames[1]: author_name,
                              fieldnames[2]: is_read,
                              fieldnames[3]: start_date,
                              fieldnames[4]: end_date,
-                             fieldnames[5]: row.get(fieldnames[5]),
-                             fieldnames[6]: shared_with.title().strip()})
-            writer.writerows(updated_shared_list[1:])
+                             fieldnames[5]: notes,
+                             fieldnames[6]: shared_with})
+            # all the remaining rows are written after the shared book
+            writer.writerows(books_list[1:])
             writeFile.close()
     except IOError:
         print("Error writing file")

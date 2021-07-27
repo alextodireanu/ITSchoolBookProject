@@ -1,6 +1,7 @@
 import datetime
 from datetime import date
 
+
 # created function to gather the user's input and validate the start and end dates
 def correct_date():
     correct_start_date = False
@@ -36,7 +37,7 @@ def correct_date():
                         end_year, end_month, end_day = map(int, end_date.split("/"))
                         end_date = datetime.date(end_year, end_month, end_day)
                         # comparing end date with current date and start date
-                        if end_date <= date.today() and end_date >= start_date:
+                        if start_date <= end_date <= date.today():
                             correct_end_date = True
                         elif end_date > date.today():
                             correct_end_date = False

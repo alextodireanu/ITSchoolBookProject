@@ -1,14 +1,14 @@
-# clear file function
+# clear file feature
 def clear_file():
     try:
-        clear_file = input("This will delete all the records. Are you sure? Y/N -> ")
-        if clear_file.upper().strip() == "Y":
+        empty_file = input("This will delete all the records. Are you sure? Y/N -> ")
+        if empty_file.upper().strip() == "Y":
             # deleting the records by truncating the file
             with open("booksDB.csv", mode='w+') as file:
                 file.close()
             print("File cleared")
             print()
-        elif clear_file.upper().strip() == "N":
+        elif empty_file.upper().strip() == "N":
             print("No changes made")
             print()
         else:

@@ -1,6 +1,7 @@
 import csv
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
+
 # list books feature
 def list_books():
     print()
@@ -26,7 +27,8 @@ def list_books():
             else:
                 print()
             for row in reader:
-                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['StartDate']}, {row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
+                print(f"{row['BookName']}, {row['AuthorName']}, {row['IsRead']}, {row['StartDate']}, "
+                      f"{row['EndDate']}, {row['Notes']}, {row['SharedWith']}")
         readFile.close()
     except IOError:
         print("Error reading file")
