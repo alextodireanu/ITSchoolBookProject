@@ -1,28 +1,37 @@
-# importing the modules for our features
-import add_book_feature
-import list_books_feature
-import update_book_feature
-import share_book_feature
-import book_notes_feature
-import clear_file_feature
-import delete_book_feature
-import os
+from add_book_feature import AddBook
+from list_books_feature import ListBooks
+from update_book_feature import UpdateBook
+from share_book_feature import ShareBook
+from book_notes_feature import BookReview
+from clear_file_feature import ClearFile
+from delete_book_feature import DeleteBook
+from os import path
+import csv
 fieldnames = ["BookName", "AuthorName", "IsRead", "StartDate", "EndDate", "Notes", "SharedWith"]
 
 
-# created Utils class which contains the following methods: main menu, app start and find book
 class Utils:
-    @ staticmethod
-    def clear_screen():
-        os.system('cls')
+    """Class to represent the methods that are used to run the app"""
+    @staticmethod
+    def book_and_author_name():
+        """Method to validate the book's and author's name"""
+        book_name = input("Please enter the book's name -> ")
+        if len(book_name.strip()) < 3:
+            print("Book name needs to have at least 3 characters. Returning to main menu...\n")
+            return False
+        book_author = input("Please enter the book's author -> ")
+        if len(book_author.strip()) < 3:
+            print("Book author needs to have at least 3 characters. Returning to main menu...\n")
+            return False
+        return book_name, book_author
 
-    @ staticmethod
+    @staticmethod
     def main_menu():
+        """Method used to run the main menu"""
         options = ("Add a book", "List the existing books", "Update a book", "Share a book",
                    "Leave a note", "Clear file", "Delete book", "Quit")
         index = 1
-        print("Hello! Main menu:")
-        print()
+        print("Hello! Main menu:\n")
         for option in options:
             print(f"{index}.{option}")
             index += 1
@@ -30,40 +39,49 @@ class Utils:
         try:
             option = int(input("Please select an option -> "))
             if option == 1:
-                Utils.clear_screen()
-                add_book_feature.add_book()
+                AddBook.add_book()
             elif option == 2:
-                list_books_feature.list_books()
+                ListBooks.list_books()
             elif option == 3:
-                Utils.clear_screen()
-                update_book_feature.update_book()
+                UpdateBook.update_book()
             elif option == 4:
-                Utils.clear_screen()
-                share_book_feature.share_book()
+                ShareBook.share_book()
             elif option == 5:
-                Utils.clear_screen()
-                book_notes_feature.book_notes()
+                BookReview.book_review()
             elif option == 6:
-                Utils.clear_screen()
-                clear_file_feature.clear_file()
+                try:
+                    if path.exists('booksDB.csv'):
+                        ClearFile.clear_file()
+                    else:
+                        raise FileNotFoundError
+                except FileNotFoundError:
+                    print('File not found! Please select options 1-5 to create the file, returning to main menu...\n')
+                else:
+                    pass
             elif option == 7:
-                Utils.clear_screen()
-                delete_book_feature.delete_book()
+                try:
+                    if path.exists('booksDB.csv'):
+                        DeleteBook.delete_book()
+                    else:
+                        raise FileNotFoundError
+                except FileNotFoundError:
+                    print('File not found! Please select options 1-5 to create the file, returning to main menu...\n')
+                else:
+                    pass
             elif option == 8:
                 print("App closed, goodbye!")
             else:
-                raise TypeError("incorrect option")
-        except TypeError:
-            print("Incorrect option selected")
-            print()
+                raise KeyError("incorrect option")
+        except KeyError:
+            print("Incorrect option selected!\n")
         except ValueError:
-            print("Only numbers from 1-8 are accepted")
-            print()
+            print("Only numbers from 1-8 are accepted!\n")
         else:
             return option
 
     @staticmethod
     def app_start():
+        """Method used to start the app"""
         max_tries = 3
         tries = 0
         start = input("Press * to start the app -> ")
@@ -94,28 +112,29 @@ class Utils:
                 break
 
     @staticmethod
-    def find_book():
-        try:
-            add_new_book = input("Book not found! Do you want to add it? Reply with Y/N -> ")
-            if add_new_book.upper().strip() == "Y":
-                add_book_feature.add_book()
-            elif add_new_book.upper().strip() == "N":
-                print("Returning to main menu...")
-                return print()
-            else:
-                raise TypeError("incorrect button pressed")
-        except TypeError:
-            print("Incorrect button pressed, returning to main menu...")
-            return print()
-        else:
-            return print()
+    def create_file():
+        """Method to create the CSV file if it doesn't exist"""
+        with open("booksDB.csv", mode='w', newline='') as writeFile:
+            writer = csv.DictWriter(writeFile, fieldnames=fieldnames)
+            writer.writeheader()
+            writeFile.close()
+        print('File successfully created!\n')
 
-    @staticmethod
-    def variables():
-        author_name = ""
-        start_date = ""
-        end_date = ""
-        notes = ""
-        shared_with = ""
-        is_read = False
-        return [author_name, start_date, end_date, notes, shared_with, is_read]
+
+class IncorrectKey(Exception):
+    """Class to create the IncorrectKey exception raised when a user presses an incorrect button"""
+    pass
+
+
+class IncorrectStartDate(Exception):
+    """Class to create the IncorrectStartDate exception"""
+    pass
+
+
+class IncorrectDateFormat(Exception):
+    """Class to create the IncorrectDateFormat exception"""
+
+
+class IncorrectEndDate(Exception):
+    """Class to create the IncorrectEndDate exception"""
+    pass
